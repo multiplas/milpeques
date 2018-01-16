@@ -1,0 +1,44 @@
+AddDefaultCharset utf-8
+
+<IfModule mod_rewrite.c>
+# Activar RewriteEngine
+RewriteEngine on
+RewriteBase /
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+
+RewriteRule ^acc/entrar/logcompra/?$ milpeques/index.php?sys_action=entrar&logcompra
+RewriteRule ^acc/anadir/(\w+)/?$ milpeques/index.php?sys_action=anadir&addcart=$1&cantidad=1
+RewriteRule ^acc/anadir/(\w+)/([0-9]{1,2})/?$ milpeques/index.php?sys_action=anadir&addcart=$1&cantidad=$2
+RewriteRule ^acc/anadirv/(.*)/?$ milpeques/index.php?sys_action=anadirv&addcart=$1
+RewriteRule ^acc/quitar/(\w+)/(.*)/(.*)/?$ milpeques/index.php?sys_action=quitar&removecart=$1&talla=$2&color=$3
+RewriteRule ^acc/quitarp/(\w+)/(.*)/(.*)/?$ milpeques/index.php?sys_action=quitarp&removecart=$1&talla=$2&color=$3
+RewriteRule ^acc/actualizar/(\w+)/?$ milpeques/index.php?sys_action=actualizar&prodact=$1
+RewriteRule ^acc/actualizarp/(\w+)/?$ milpeques/index.php?sys_action=actualizarp&prodact=$1
+RewriteRule ^acc/activar/(\w+)/?$ milpeques/index.php?sys_action=activar&activador=$1
+RewriteRule ^acc/(\w+)/?$ milpeques/index.php?sys_action=$1
+RewriteRule ^acc/rmace/(\w+)/?$ milpeques/index.php?sys_action=rmace&id=$1
+RewriteRule ^quienessomos/?$ milpeques/index.php?quienessomos
+RewriteRule ^cuenta/logcompra/?$ milpeques/index.php?cuenta&logcompra
+RewriteRule ^contacto/(.*)/?$ milpeques/index.php?contacto=$1
+RewriteRule ^([a-z][a-z])/(\w+)/(\w+)/([a-zA-Z]+)?$ milpeques/index.php?lng=$1&$2=$3&nombre=$4
+RewriteRule ^([a-z][a-z])/(\w+)/(\w+)/([a-zA-Z]+)/?$ milpeques/index.php?lng=$1&$2=$3&nombre=$4
+RewriteRule ^([a-z][a-z])/(\w+)/(\w+)/(\w+)/?$ milpeques/index.php?lng=$1&$2=$3&pagina=$4
+RewriteRule ^([a-z][a-z])/(\w+)/(\w+)/([-_\w]+)/?$ milpeques/index.php?lng=$1&$2=$3&nombre=$4
+RewriteRule ^([a-z][a-z])/(\w+)/(\w+)/([-_\w]+)/(\w+)/?$ milpeques/index.php?lng=$1&$2=$3&nombre=$4&pagina=$5
+RewriteRule ^([a-z][a-z])/(\w+)/(\w+)/?$ milpeques/index.php?lng=$1&$2=$3
+RewriteRule ^([a-z][a-z])/(\w+)/?$ milpeques/index.php?lng=$1&$2
+RewriteRule ^([a-z][a-z])/?$ milpeques/index.php?lng=$1
+
+
+RewriteRule ^(\w+)/(\w+)/([a-zA-Z]+)?$ milpeques/index.php?$1=$2&nombre=$3
+RewriteRule ^(\w+)/(\w+)/([a-zA-Z]+)/?$ milpeques/index.php?$1=$2&nombre=$3
+RewriteRule ^(\w+)/(\w+)/(\w+)/?$ milpeques/index.php?$1=$2&pagina=$3
+RewriteRule ^(\w+)/(\w+)/([-_\w]+)/?$ milpeques/index.php?$1=$2&nombre=$3
+RewriteRule ^(\w+)/(\w+)/([-_\w]+)/(\w+)/?$ milpeques/index.php?$1=$2&nombre=$3&pagina=$4
+RewriteRule ^(\w+)/(\w+)/?$ milpeques/index.php?$1=$2
+RewriteRule ^(\w+)/?$ milpeques/index.php?$1
+
+
+errordocument 404 /temporal/error/error404.html
+</IfModule>
