@@ -1270,6 +1270,9 @@
                 if(isset($_POST['nuevopenvio'])){
                     $_SESSION['compra']['pago']['penvio'] = $_POST['nuevopenvio'];//Variables de onepagecheckout
                 }
+                if(isset($_POST['nuevotransp'])){
+                    $_SESSION['compra']['pago']['transp'] = $_POST['nuevotransp'];//Variables de onepagecheckout
+                }
 				header('Location: '.$draizp.'/'.$_SESSION['lenguaje'].'confirmacion');
 				break;
 			case 'realizar_pago':
@@ -1277,33 +1280,35 @@
                     $penvio = $_SESSION['compra']['pago']['penvio'];
                 else
                     $penvio = $_POST[penvio];
-                echo $_POST[transp];
-                die;
+                if(isset($_SESSION['compra']['pago']['transp']))
+                    $transp = $_SESSION['compra']['pago']['transp'];
+                else
+                    $transp = $_POST[transp];
 				$_SESSION['compra']['paso'] = 4;
 				require_once($draiz.'/sistema/mod_cestaycompra.php');
 				
 				if ($_SESSION['compra']['pago']['pagov'] == 'ccc')
-					PagarConTransferencia($penvio, $_POST[transp]);
+					PagarConTransferencia($penvio, $transp);
 				else if ($_SESSION['compra']['pago']['pagov'] == 'cre')
-					PagarContraReembolso($penvio, $_POST[transp]);
+					PagarContraReembolso($penvio, $transp);
                                 else if ($_SESSION['compra']['pago']['pagov'] == 'tie')
 					PagarEnTienda();
                                 else if ($_SESSION['compra']['pago']['pagov'] == 'tpv')
-					PagarTarjetaSinTPV($penvio, $_POST[transp]);
+					PagarTarjetaSinTPV($penvio, $transp);
                                 else if ($_SESSION['compra']['pago']['pagov'] == 'dom')
-					PagarDomiciliacion($penvio, $_POST[transp]);
+					PagarDomiciliacion($penvio, $transp);
                                 else if ($_SESSION['compra']['pago']['pagov'] == 'domm')
-					PagarDomiciliacionM($penvio, $_POST[transp]);
+					PagarDomiciliacionM($penvio, $transp);
                                 else if ($_SESSION['compra']['pago']['pagov'] == 'fdir')
-					PagarDomiciliacionFD($penvio, $_POST[transp]);
+					PagarDomiciliacionFD($penvio, $transp);
 				else if ($_SESSION['compra']['pago']['pagov'] == 'tar')
-					PagarConTarjetaTPV($penvio, $_POST[transp]);
+					PagarConTarjetaTPV($penvio, $transp);
                                 else if ($_SESSION['compra']['pago']['pagov'] == 'paym')
-					PagarConPaypalS($penvio, $_POST[transp]);
+					PagarConPaypalS($penvio, $transp);
                                 else if ($_SESSION['compra']['pago']['pagov'] == 'fapl')
-					PagarConAplazame($penvio, $_POST[transp]);
+					PagarConAplazame($penvio, $transp);
 				else
-					PagarConPaypal($penvio, $_POST[transp]);
+					PagarConPaypal($penvio, $transp);
 				break;
 			case 'pagook':
 				if (isset($_GET['uid']) && isset($_GET['ses']) && isset($_GET['secreto']) && isset($_GET['fpago']))

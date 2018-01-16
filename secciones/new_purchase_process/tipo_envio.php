@@ -53,12 +53,8 @@ if($Empresa['tipoportes'] == 0 || $Empresa['tipoportes'] == 2 || $Empresa['tipop
             <?php
     } 
     ?>
-            <input type='hidden' id='transp' name='transp' value='<?=$idPT?>'>
-            <script>
-                function cambTransp($id){
-                    document.getElementById("transp").value = $id;
-                }
-            </script>
+            <input type='hidden' id='transp2' name='transp2' value='<?=$idPT?>'>
+
 <?php }
 }
  ?>

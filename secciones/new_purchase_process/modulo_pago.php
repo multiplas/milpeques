@@ -4,6 +4,7 @@
         <input type="hidden" id="importeBase" name="importeBase" value="<?=$_SESSION['datos_cesta']['ImporteTotal']?>">
         <input type="hidden" id="importeTotal" name="importeTotal" value="<?=$_SESSION['datos_cesta']['ImporteTotal']?>"/>
         <input type="hidden" id="nuevopenvio" name="nuevopenvio" value="<?=extraePortes($Empresa, $total, $draizp)?>"/>
+        <input type='hidden' id='nuevotransp' name='nuevotransp' value='0'>
         
         <select id="pagarcon" name="pagarcon" onchange="activa()">
             <option value="" selected><?=$auxpag?> *</option>

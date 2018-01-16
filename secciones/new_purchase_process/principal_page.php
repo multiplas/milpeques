@@ -10,7 +10,7 @@ window.location.href = "'.$draizp.'/cesta'.'";
 </script>';
 if(!isset($paises))
     $paises = Paises();
-if (isset($_GET['confirmacion']))
+if (isset($_GET['confirmacion']) && $_SESSION['compra']['paso'] >= 3)
     {
         include_once('confirmacion.php');
     }

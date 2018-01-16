@@ -40,6 +40,7 @@ function extraePortes($Empresa, $total, $draizp){
     jQuery(document).ready(function(){
         var base = jQuery('#importeBase').val().replace(',','.');
         jQuery('.importe-total').text(base);
+        jQuery('#nuevotransp').val(jQuery('#transp2').val());
 
         jQuery( ".update-data" ).click(function() {
             jQuery( "#datosper" ).submit();
@@ -63,8 +64,7 @@ function extraePortes($Empresa, $total, $draizp){
         });    
     });  
     function cambTransp($id){
-        alert();
-        document.getElementById("transp2").value = $id;
+        document.getElementById("nuevotransp").value = $id;
     }
 </script>
 
