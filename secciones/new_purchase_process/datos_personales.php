@@ -264,8 +264,6 @@ function extraePortes($Empresa, $total, $draizp){
             ?>
             <hr>
             <div class="row transporte-gastos">
-            <?php  include_once 'portes_usr.php'; ?>
-            <hr>
             <?php  include_once 'tipo_envio.php'; ?>
             </div>
             <hr>

@@ -2996,7 +2996,7 @@ function Presupuesto($usuario)
                         WHERE idusuario=$uid;";
                 $query = mysqli_query($dbi, $sql);
         
-		header('Location: http://localhost/milpeques/transferencia');
+        header('Location: '.$draizp .'/'. $_SESSION['lenguaje'].'transferencia');
 	}
 	
 	
