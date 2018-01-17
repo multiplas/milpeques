@@ -1,46 +1,16 @@
 <?php
 /* this file Display all user info, pay methods, transfer services... */
-function extraePortes($Empresa, $total, $draizp){
-    $portes = 0;
-    if($Empresa['tipoportes'] == 0){
-        $portes = number_format(CalculaPortesPS($total), 2, ',', '.');
-        $portes = str_replace(',', '.', $portes);
-    }else if($Empresa['tipoportes'] == 1){
-        $portes_ar = CalculaPortesKmS($total);
-        //$logoPortes = $portes_ar[1];
-        $portes = $portes_ar[0];
-        $portes = str_replace(',', '.', $portes);
-        if($portes_ar[0] < 0){
-            echo '<META HTTP-EQUIV=Refresh CONTENT="0; URL='.$draizp.'/'.$_SESSION['lenguaje'].'/cesta">';
-            exit;
-        }
-    }else if($Empresa['tipoportes'] == 2){
-        $portes = CalculaPortesProvS($total);
-        if($portes >= 0){
-            $portes = number_format($portes, 2, ',', '.');
-            $portes = str_replace(',', '.', $portes);
-        }else{
-            $portes = -4;
-        }
-    }else if($Empresa['tipoportes'] == 3){
-        $portes = CalculaPortesProvSP($total, $peso);
-        if($portes >= 0){
-            $portes = number_format($portes, 2, ',', '.');
-            $portes = str_replace(',', '.', $portes);
-        }else{
-            $portes = -4;
-        }
-    }
-    return $portes;
-}
-
+ $mostraEnvio = MostrarEnvios($_SESSION['usr']['id']);
  ?>
 
 <script type="text/javascript">
+    var cambiado = false; 
+    var oldPorte = 0;
+
     jQuery(document).ready(function(){
         var base = jQuery('#importeBase').val().replace(',','.');
-        jQuery('.importe-total').text(base);
-        jQuery('#nuevotransp').val(jQuery('#transp2').val());
+        var porteOriginal = parseFloat(jQuery('#nuevopenvio').val());
+        jQuery('#nuevopenvio').val( jQuery('#nuevopenvio').val() - porteOriginal);
 
         jQuery( ".update-data" ).click(function() {
             jQuery( "#datosper" ).submit();
@@ -51,7 +21,9 @@ function extraePortes($Empresa, $total, $draizp){
         jQuery('input[type=radio][name=penvio]').change(function() {//Script para cambiar el precio total
             total = 0;
             base = parseFloat(base);
-            porte = parseFloat(this.value);
+            porte = this.value.replace('.','');
+            porte = parseFloat(porte);
+            porte = porte + porteOriginal;
             total = base + porte;
             var rounded = Math.round((total*100),2) /100;
             if(porte == 0)
@@ -63,6 +35,7 @@ function extraePortes($Empresa, $total, $draizp){
             jQuery('.importe-total').text(total);
         });    
     });  
+
     function cambTransp($id){
         document.getElementById("nuevotransp").value = $id;
     }
@@ -176,111 +149,10 @@ function extraePortes($Empresa, $total, $draizp){
         </div>   
         </form>
         <div class="col-xs-12 col-sm-5 datos-personales-derecha">
-            <?php
-            $precio_total_portes = number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],($total+ $portes)), 2, ',', '.') . $_SESSION['moneda'] ;
-            $subtotal = 0;
-			if ($_SESSION['usr'] != null)
-			{
-				$pedido = Cesta($_SESSION['usr']['id']);
-			}
-			else
-			{
-				$pedido = CestaSession($_SESSION['cestases']);
-			}
+            <?php           
+                include_once 'total_calculate_helper.php';
+                total_calculate_helper($draizp);
             ?>
-            <?php $total = 0 ?>
-            <?php foreach ($_SESSION['datos_cesta'] as $current_item):
-                if(isset($current_item['id'])): ?>
-                 <?php   
-                    $total += ($current_item['precio'] + $current_item['personalizacion']) * $current_item['cantidad'];
-                        
-                    $total += $Empresa['contrareembolso'];
-
-                    if($Empresa['tipoportes'] == 0){
-                        $portes = CalculaPortesP($total);
-                        $portes = str_replace(',', '.', $portes[0]);                                                                    
-                    }else if($Empresa['tipoportes'] == 1){
-                        $portes_ar = CalculaPortesKm($total);
-                        $logoPortes = $portes_ar[1];
-                        $portes = $portes_ar[0];
-                        $portes = str_replace(',', '.', $portes);
-                        if($portes_ar[0]<0){
-                            echo '<META HTTP-EQUIV=Refresh CONTENT="0; URL='.$draizp.'/'.$_SESSION['lenguaje'].'/cesta">';
-                            exit;
-                         }
-                    }else if($Empresa['tipoportes'] == 2){
-                        $portes = CalculaPortesProv($total);
-                        if($portes >= 0){
-                            $portes = number_format($portes, 2, ',', '.');
-                            $portes = str_replace(',', '.', $portes);
-                        }else{
-                            $portes = -4;
-                        }
-                    }else if($Empresa['tipoportes'] == 3){
-                        $portes = CalculaPortesProvP($total, $peso);
-                        if($portes >= 0){
-                            $portes = number_format($portes, 2, ',', '.');
-                            $portes = str_replace(',', '.', $portes);
-                        }else{
-                            $portes = -4;
-                        }
-                    }
-                    $abono = Abono(@$_SESSION['usr']['id']);
-                    $total = $total - $abono;
-                    if (@$_SESSION['compra']['codpromo'] != null && @$_SESSION['compra']['codpromo'] != '')
-                    {
-                        $pcode = CodigoPromocional(strtolower($_SESSION['compra']['codpromo']), $total);
-                        if ($pcode != null)
-                        {
-                            if ($pcode['tipo'] == $_SESSION["moneda"])
-                                $total = $total - $pcode['descuento'];
-                            else
-                                $total = $total - ($total * ($pcode['descuento'] / 100));
-                            
-                            //echo $total;
-                        }
-                    }
-                    $_SESSION['compra']['total'] = $total+ $portes;
-                 ?>
-                 
-                 
-                <div class="row bag-item">
-                    <div class="col-sm-3 hidden-xs">
-                        <img src="<?php echo (!empty($current_item['imagen'])) ? $draizp.'/imagenesproductos/'.$current_item['imagen'] : $draizp.'/imagenesproductos/'.'default.png' ?>" alt=""/>
-                    </div>
-                    <div class="col-xs-6">
-                        <span><?php echo $current_item['nombre'] ?></span>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 price text-right">
-                        <?php echo $current_item['cantidad'] ." x ". round($current_item['precio'],2) . $_SESSION['moneda'] ?>
-                    </div>
-                </div>
-                <?php $subtotal += $current_item['cantidad']*$current_item['precio'] ?>
-                <?php endif; ?>
-            <?php endforeach; ?>
-            <?php
-           
-            $_SESSION['datos_cesta']['subtotal'] = $subtotal;
-            ?>
-            <hr>
-            <div class="row transporte-gastos">
-            <?php  include_once 'tipo_envio.php'; ?>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="col-xs-12"><?php echo $_SESSION['datos_cesta']['baseImp'] ?></div>
-                <div class="col-xs-9">Subtotal</div>
-                <div class="col-xs-3 text-right"><?php echo round($subtotal,2) ?></div>
-                <div class="col-xs-9">Envio</div>
-                <div class="col-xs-3 text-right portes-text"><?php echo ($Empresa['portes_gratis'] == 0) ? 'Gratis' : extraePortes($Empresa, $total, $draizp) ?></div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="col-xs-12 col-sm-9"><span class="importe-title">Total</span></div>
-                <div class="col-xs-12 col-sm-3 text-right"><span class="importe-total"><?php echo $_SESSION['datos_cesta']['ImporteTotal'] ?></span> <?=$_SESSION['moneda']?> </div>
-            </div>
-             <hr>
-            <?php  include_once('modulo_pago.php'); ?>
         </div>
     </div>
 

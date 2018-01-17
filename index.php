@@ -1284,6 +1284,8 @@
                     $transp = $_SESSION['compra']['pago']['transp'];
                 else
                     $transp = $_POST[transp];
+                $penvio = floatval($penvio);
+                
 				$_SESSION['compra']['paso'] = 4;
 				require_once($draiz.'/sistema/mod_cestaycompra.php');
 				

@@ -1138,6 +1138,8 @@ else: //Antiguo Proceso de compra
                             
                             foreach ($portes_extras AS $nporte){
                                 if($nporte['Gratis'] > $total || !isset($nporte['Gratis'])){
+                                    echo $nporte['precio'] ." - ". $portes;
+                                    die;
                             ?>
                                 <input onclick="cambTransp(<?=$nporte['id']?>)" type="radio" id="penvio" name="penvio" <?php if($cont == 0){ echo "checked"; $cont++; $idPT=$nporte['id']; } ?> value="<?=$nporte['precio']-$portes?>"> <?=$nporte['transportista']?> (+<?=number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$nporte['precio']), 2, ',', '.')?><?=$_SESSION['moneda']?>)
                             <?php 

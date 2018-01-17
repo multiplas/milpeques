@@ -3,11 +3,14 @@
         <div style="display:none">
         <form method="post" enctype="multipart/form-data" id="confirmacion" name="confirmacion" action="<?=$draizp?>/acc/realizar_pago">
             <div style="margin: auto; max-width: 550px; width: 100%;">
+                <?php include 'total_calculate_helper.php'; ?>
                 <h2><?=$auxprod?></h2>
                 <?php
                 if (count($pedido) < 1) echo '<p>No hay productos en tu cesta!</p>';
                 else
                 {
+                    if(!isset($Empresa))
+                        global $Empresa;
                     ?>
                         <table id="tcesta" class="alter">
                             <thead>
@@ -23,127 +26,10 @@
                             </thead>
                             <tbody>
                                 <?php
-                                    $total = 0;
-                                    $peso = 0;
-                                    foreach ($pedido AS $micesta)
-                                    {
-                                        $total += ($micesta['precio'] + $micesta['personalizacion']) * $micesta['cantidad'];
-                                        $peso += ($micesta['peso'] * $micesta['cantidad']);
-                                ?>
-                                                                    
-                                                                    <?php if($micesta['afiliado'] != ''){
-                                                                                $urlArticulo = $micesta['nombre'];
-                                                                            }else{
-                                                                                if($micesta['pack'] != true )
-                                                                                    $urlArticulo = "<a href='".$draizp."/".$_SESSION['lenguaje']."producto/".$micesta['id']."'>".$micesta['nombre']."</a>";
-                                                                                else
-                                                                                    $urlArticulo = "<a href='".$draizp."/".$_SESSION['lenguaje']."pack/".$micesta['id']."'>".$micesta['nombre']."</a>";
-                                                                            } ?>
-                                        <tr>
-                                            <td style="display: none;"></td>
-                                            <td style="display: none; position: relative;">
-                                            </td>
-                                            <td style="width: 60% !important;">
-                                                <?php if(is_numeric($micesta['descuento'])) { ?><?=$urlArticulo?><?php } else { ?><span class="enlazado"><?=$micesta['nombre']?></span><?php } ?>
-                                                <?php if($micesta['fDirecta'] == '1') { ?><span>+ <?=number_format($micesta['cuota'],2,',','.')?>€/mes x <?=$micesta['meses']?>meses</span><?php } ?>
-                                                                                                        <span><?=($micesta['talla']!=null ? $micesta['talla'] : '')?> <?=($micesta['color']!=null ? ' ('.$micesta['color'].')' : '')?><?=($micesta['extra']!=null ? $micesta['extra'] : '')?></span>
-                                                                                                        <?php if($micesta['aplazame'] == 1){ ?>
-                                                                                                            <span>Financialo con Aplazame por <?=number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$micesta['caplazame1']), 2, ',', '.')?><?=$_SESSION['moneda']?> + <?=number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$micesta['caplazame']), 2, ',', '.')?><?=$_SESSION['moneda']?> al mes</span>
-                                                                                                        <?php } ?>
-                                            </td>
-                                            <td>
-                                                <form method="post" action="#">
-                                                    <input type="text" class="miniF" id="cantidad<?=$micesta['id']?>" name="cantidad" value="<?=$micesta['cantidad']?>" readonly />
-                                                </form>
-                                            </td>
-                                            <td style="display: none;"></td>
-                                            <td style="display: none;"></td>
-                                            <td style="width: 30% !important;"><?=number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],(($micesta['precio'] + $micesta['personalizacion']) * $micesta['cantidad'])), 2, ',', '.')?> <?=$_SESSION['moneda']?></td>
-                                        </tr>
-                                <?php
-                                    }
-                                    
-                                    if($Empresa['tipoportes'] == 0){
-                                                                                    $portes = number_format(CalculaPortesPS($total), 2, ',', '.');
-                                                                                    $portes = str_replace(',', '.', $portes);
-                                                                                }else if($Empresa['tipoportes'] == 1){
-                                                                                    $portes_ar = CalculaPortesKmS($total);
-                                                                                    //$logoPortes = $portes_ar[1];
-                                                                                    $portes = $portes_ar[0];
-                                                                                    $portes = str_replace(',', '.', $portes);
-                                                                                    if($portes_ar[0] < 0){
-                                                                                        echo '<META HTTP-EQUIV=Refresh CONTENT="0; URL='.$draizp.'/'.$_SESSION['lenguaje'].'/cesta">';
-                                                                                        exit;
-                                                                                    }
-                                                                                }else if($Empresa['tipoportes'] == 2){
-                                                                                    $portes = CalculaPortesProvS($total);
-                                                                                    if($portes >= 0){
-                                                                                        $portes = number_format($portes, 2, ',', '.');
-                                                                                        $portes = str_replace(',', '.', $portes);
-                                                                                    }else{
-                                                                                        $portes = -4;
-                                                                                    }
-                                                                                }else if($Empresa['tipoportes'] == 3){
-                                                                                    $portes = CalculaPortesProvSP($total, $peso);
-                                                                                    if($portes >= 0){
-                                                                                        $portes = number_format($portes, 2, ',', '.');
-                                                                                        $portes = str_replace(',', '.', $portes);
-                                                                                    }else{
-                                                                                        $portes = -4;
-                                                                                    }
-                                                                                }
-                                                                                
-                                                                                $abono = Abono(@$_SESSION['usr']['id']);
-                                                                                $total = $total - $abono;
-                                    
-                                    if ($abono > 0)
-                                    {
-                                        ?>
-                                            <tr>
-                                                <td style="display: none;"></td>
-                                                <td style="display: none; position: relative;"><span style="color: #FFF; font-size: 1.6rem; left: 43%; position: absolute; top: 45%;"><?=number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$abono), 2, ',', '.')?><?=$_SESSION['moneda']?></span><img src="<?=$draizp?>/imagenesproductos/abonos.png" alt="<?=$micesta['nombre']?>"></td>
-                                                <td><span class="enlazado">Abonos acumulados</span><span>Descuentos acumulables por opinar</span></td>
-                                                <td>
-                                                    <form method="post" action="#">
-                                                        <input type="text" class="miniF" name="desertor" value="1" readonly />
-                                                    </form>
-                                                </td>
-                                                <td style="display: none;"></td>
-                                                <td style="display: none;"></td>
-                                                <td>- <?=number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$abono, 2, ',', '.'))?> <?=$_SESSION['moneda']?></td>
-                                            </tr>
-                                        <?php
-                                    }
-                                                                                
-                                                                                if (@$_SESSION['compra']['codpromo'] != null && @$_SESSION['compra']['codpromo'] != '')
-                                    {
-                                        $pcode = CodigoPromocional(strtolower($_SESSION['compra']['codpromo']), $total);
-                                        if ($pcode != null)
-                                        {
-                                            if ($pcode['tipo'] == '€')
-                                                $total = $total - $pcode['descuento'];
-                                            else
-                                                $total = $total - ($total * ($pcode['descuento'] / 100));
-                                            
-                                            //echo $total;
-                                            ?>
-                                                <tr>
-                                                    <td style="display: none;"></td>
-                                                    <td style="display: none; position: relative;"><span style="color: #FFF; font-size: 1.6rem; left: 43%; position: absolute; top: 45%;"><?=number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$abono), 2, ',', '.')?><?=$_SESSION['moneda']?></span><img src="<?=$Empresa['promocionIcon'] != '' ? 'iconos/'.$Empresa['promocionIcon'] : '/imagenesproductos/descuentos.png'?>" alt="Código Promocional"></td>
-                                                    <td><span class="enlazado">Código Promocional</span><span><?=strtoupper($_SESSION['compra']['codpromo'])?><br><?=$pcode['promocion']?></span></td>
-                                                    <td>
-                                                        <form method="post" action="#">
-                                                            <input type="text" class="miniF" name="desertor" value="1" readonly />
-                                                        </form>
-                                                    </td>
-                                                    <td style="display: none;"></td>
-                                                    <td style="display: none;"></td>
-                                                    <td>-<?=number_format($pcode['descuento'], 2, ',', '.')?> <?=$pcode['tipo']?></td>
-                                                </tr>
-                                            <?php
-                                        }
-                                    }
-                                                                                
+                                    $total = $_SESSION['datos_cesta']['totalSinEnvio'];
+                                    $peso = 0;                                  
+                                       
+                                    $portes = calculatePortes($total);                                            
                                     if(($portes > 0 || $Empresa['portes_gratis'] == 0) && $portes != -4){ ?>
                                     <tr>
                                         <td style="display: none;"></td>
@@ -165,7 +51,7 @@
                                                                                             
                                                                                         
                                     </tr>
-                                                                                <?php }else if($portes == -4){ ?>
+                                                                            <?php }else if($portes == -4){ ?>
                                                                                     <td style="display: none;"></td>
                                         <td style="display: none; position: relative;"></td>
                                         <td><span class="enlazado"><?=$auxgas?></span><span><?=$auxtgas?> <?=$_SESSION['compra']['entrega']['provinciaE']?>, <?=$_SESSION['compra']['entrega']['paisE']?></span></td>
@@ -266,8 +152,7 @@
                     foreach ($portes_extras AS $nporte){
                         if($nporte['Gratis'] > $total || !isset($nporte['Gratis'])){
                     ?>
-                        <input onclick="cambTransp(<?=$nporte['id']?>)" type="radio" id="penvio" name="penvio" <?php if($cont == 0){ echo "checked"; $cont++; $idPT=$nporte['id']; } ?> value="<?=$nporte['precio']-$portes?>"> <?=$nporte['transportista']?> (+<?=number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$nporte['precio']), 2, ',', '.')?><?=$_SESSION['moneda']?>)
-                    <?php 
+                                <input onclick="cambTransp(<?=$nporte['id']?>)" type="radio" id="penvio" name="penvio" <?php if($cont == 0){ echo "checked"; $cont++; $idPT=$nporte['id']; } ?> value="<?=$nporte['precio']-$portes?>"> <?=$nporte['transportista']?> (+<?=number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$nporte['precio']), 2, ',', '.')?><?=$_SESSION['moneda']?>)                    <?php 
                         }else{
                     ?>
                         <input onclick="cambTransp(<?=$nporte['id']?>)" type="radio" id="penvio" name="penvio" <?php if($cont == 0){ echo "checked"; $cont++; $idPT=$nporte['id']; } ?> value="<?=-$portes?>"> <?=$nporte['transportista']?> (0,00<?=$_SESSION['moneda']?>)

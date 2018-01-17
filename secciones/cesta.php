@@ -321,8 +321,6 @@ include_once 'auxiliares.php';
 								<td></td>
 								<td colspan="2">
                                     <?php if($Empresa['desglose'] == 1){ ?>
-                                        <?php $_SESSION['datos_cesta']['baseImp'] = $aux12 . " " . number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],(($total / (100+$Empresa['impuesto'])) * 100)), 2, ',', '.'). " " .$_SESSION['moneda'] . " " . "(" .$Empresa['impuesto']."%)"."<span class='pull-right'>".number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],(($total / (100+$Empresa['impuesto'])) * $Empresa['impuesto'])), 2, ',', '.').$_SESSION['moneda'] ."</span>" ?>
-                                        <?=$aux12?>&nbsp;&nbsp;
                                         <?=number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],(($total / (100+$Empresa['impuesto'])) * 100)), 2, ',', '.').$_SESSION['moneda']?>&nbsp;&nbsp;-&nbsp;
                                         <!--IVA-->(<?=$Empresa['impuesto']?>%)&nbsp;&nbsp;
                                         <?=number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],(($total / (100+$Empresa['impuesto'])) * $Empresa['impuesto'])), 2, ',', '.').$_SESSION['moneda']?>
@@ -337,8 +335,8 @@ include_once 'auxiliares.php';
                                     }
                                     </style>
                                                                 <td class="SMXS"></td>
-                                <?php $_SESSION['datos_cesta']['ImporteTotal'] = number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],($total+ $portes)), 2, ',', '.')?>
-								<td colspan="3">Total&nbsp;&nbsp;<strong><?=number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],($total+ $portes)), 2, ',', '.')?> <?=$_SESSION['moneda']?></strong></td>
+                                <?php $_SESSION['datos_cesta']['ImporteTotal'] = number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],($total+ $portes)), 2, ',', '.') . $_SESSION['moneda']?>
+								<td colspan="3">Total&nbsp;&nbsp;<strong> <?=$_SESSION['moneda']?></strong></td>
 							</tr>
 					</tbody>
 				</table>

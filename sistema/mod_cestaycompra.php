@@ -358,50 +358,51 @@
 		global $dbi, $Empresa;
 		
 		$portes = 0;
-                if($_SESSION['compra']['entrega']['paisidE'] == 'ESP'){
-                    $sql = "SELECT TPGratis, precioP FROM bd_portes WHERE precioP != 'NULL' AND disponible = 1 ORDER BY precioP ASC";
-                    $query = mysqli_query($dbi, $sql);
-                    $assoc = mysqli_fetch_array($query);
-                    if($precio < $assoc['TPGratis'] || $assoc['TPGratis'] == NULL)
-                        $portes = $assoc['precioP'];
-                }else if($_SESSION['compra']['entrega']['paisidE'] == 'ESX'){
-                    $sql = "SELECT TCGratis, precioC FROM bd_portes WHERE precioC != 'NULL' AND disponible = 1 ORDER BY precioC ASC";
-                    $query = mysqli_query($dbi, $sql);
-                    $assoc = mysqli_fetch_array($query);
-                    if($precio < $assoc['TCGratis'] || $assoc['TCGratis'] == NULL)
-                        $portes = $assoc['precioC'];
-                }else if($_SESSION['compra']['entrega']['paisidE'] == 'ESY'){
-                    $sql = "SELECT TBGratis, precioB FROM bd_portes WHERE precioB != 'NULL' AND disponible = 1 ORDER BY precioB ASC";
-                    $query = mysqli_query($dbi, $sql);
-                    $assoc = mysqli_fetch_array($query);
-                    if($precio < $assoc['TBGratis'] || $assoc['TBGratis'] == NULL)
-                        $portes = $assoc['precioB'];
-                }else if($_SESSION['compra']['entrega']['paisidE'] == 'ESZ'){
-                    $sql = "SELECT TCMGratis, precioCM FROM bd_portes WHERE precioCM != 'NULL' AND disponible = 1 ORDER BY precioCM ASC";
-                    $query = mysqli_query($dbi, $sql);
-                    $assoc = mysqli_fetch_array($query);
-                    if($precio < $assoc['TCMGratis'] || $assoc['TCMGratis'] == NULL)
-                        $portes = $assoc['precioCM'];
-                }else{
-                    $sql = "SELECT Code, LocalName, Continent
-                            FROM bd_paises 
-                            WHERE Code='".$_SESSION['compra']['entrega']['paisidE']."' ORDER BY LocalName, Code ASC;";
-                    $query = mysqli_query($dbi, $sql);
-                    $assoc = mysqli_fetch_array($query);
-                    if($assoc['Continent'] == 'Europe'){
-                        $sql = "SELECT TEGratis, precioE FROM bd_portes WHERE precioE != 'NULL' AND disponible = 1 ORDER BY precioE ASC";
-                    $query = mysqli_query($dbi, $sql);
-                    $assoc = mysqli_fetch_array($query);
-                    if($precio < $assoc['TEGratis'] || $assoc['TEGratis'] == NULL)
-                        $portes = $assoc['precioE'];
-                    }else{
-                        $sql = "SELECT TIGratis, precioI FROM bd_portes WHERE precioI != 'NULL' AND disponible = 1 ORDER BY precioI ASC";
-                    $query = mysqli_query($dbi, $sql);
-                    $assoc = mysqli_fetch_array($query);
-                    if($precio < $assoc['TIGratis'] || $assoc['TIGratis'] == NULL)
-                        $portes = $assoc['precioI'];
-                    }
-                }
+        if($_SESSION['compra']['entrega']['paisidE'] == 'ESP'){
+            $sql = "SELECT TPGratis, precioP FROM bd_portes WHERE precioP != 'NULL' AND disponible = 1 ORDER BY precioP ASC";
+            $query = mysqli_query($dbi, $sql);
+            $assoc = mysqli_fetch_array($query);
+            
+            if($precio < $assoc['TPGratis'] || $assoc['TPGratis'] == NULL)
+                $portes = $assoc['precioP'];
+        }else if($_SESSION['compra']['entrega']['paisidE'] == 'ESX'){
+            $sql = "SELECT TCGratis, precioC FROM bd_portes WHERE precioC != 'NULL' AND disponible = 1 ORDER BY precioC ASC";
+            $query = mysqli_query($dbi, $sql);
+            $assoc = mysqli_fetch_array($query);
+            if($precio < $assoc['TCGratis'] || $assoc['TCGratis'] == NULL)
+                $portes = $assoc['precioC'];
+        }else if($_SESSION['compra']['entrega']['paisidE'] == 'ESY'){
+            $sql = "SELECT TBGratis, precioB FROM bd_portes WHERE precioB != 'NULL' AND disponible = 1 ORDER BY precioB ASC";
+            $query = mysqli_query($dbi, $sql);
+            $assoc = mysqli_fetch_array($query);
+            if($precio < $assoc['TBGratis'] || $assoc['TBGratis'] == NULL)
+                $portes = $assoc['precioB'];
+        }else if($_SESSION['compra']['entrega']['paisidE'] == 'ESZ'){
+            $sql = "SELECT TCMGratis, precioCM FROM bd_portes WHERE precioCM != 'NULL' AND disponible = 1 ORDER BY precioCM ASC";
+            $query = mysqli_query($dbi, $sql);
+            $assoc = mysqli_fetch_array($query);
+            if($precio < $assoc['TCMGratis'] || $assoc['TCMGratis'] == NULL)
+                $portes = $assoc['precioCM'];
+        }else{
+            $sql = "SELECT Code, LocalName, Continent
+                    FROM bd_paises 
+                    WHERE Code='".$_SESSION['compra']['entrega']['paisidE']."' ORDER BY LocalName, Code ASC;";
+            $query = mysqli_query($dbi, $sql);
+            $assoc = mysqli_fetch_array($query);
+            if($assoc['Continent'] == 'Europe'){
+                $sql = "SELECT TEGratis, precioE FROM bd_portes WHERE precioE != 'NULL' AND disponible = 1 ORDER BY precioE ASC";
+            $query = mysqli_query($dbi, $sql);
+            $assoc = mysqli_fetch_array($query);
+            if($precio < $assoc['TEGratis'] || $assoc['TEGratis'] == NULL)
+                $portes = $assoc['precioE'];
+            }else{
+                $sql = "SELECT TIGratis, precioI FROM bd_portes WHERE precioI != 'NULL' AND disponible = 1 ORDER BY precioI ASC";
+            $query = mysqli_query($dbi, $sql);
+            $assoc = mysqli_fetch_array($query);
+            if($precio < $assoc['TIGratis'] || $assoc['TIGratis'] == NULL)
+                $portes = $assoc['precioI'];
+            }
+        }
 
 		return $portes;
 	}
@@ -2426,6 +2427,7 @@ function Presupuesto($usuario)
                         $portes += CalculaPortesProvSP($precio, $peso); 
                     }
                 }
+                
                 $portes += $penvio;                
                 
                 if ($promo != null)
@@ -2681,7 +2683,7 @@ function Presupuesto($usuario)
         
                 $_SESSION['finalizacion']['precio'] = $precio;
                 
-
+    
 		// Se incluye la librería
 		require_once('./componentes/redsys/apiRedsys.php');
                 // Se crea Objeto
@@ -2955,13 +2957,13 @@ function Presupuesto($usuario)
 	{
 		global $dbi, $Empresa;
 		require_once('./sistema/mod_contacto.php');
-                require_once('./sistema/mod_varios.php');
-                
-                if($_SESSION['compra']['afiliadopaypal'] != ''){ 
-                    $empresilla = $_SESSION['compra']['afiliadopaypal'];
-                }else{
-                    $empresilla = $Empresa['nombre'];
-                }
+        require_once('./sistema/mod_varios.php');
+        
+        if($_SESSION['compra']['afiliadopaypal'] != ''){ 
+            $empresilla = $_SESSION['compra']['afiliadopaypal'];
+        }else{
+            $empresilla = $Empresa['nombre'];
+        }
                 
 		$secreto = uniqid();
                 $cambio = ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],1);

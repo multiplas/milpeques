@@ -1,9 +1,10 @@
 <form method="post" id="pago-form" name="pago" action="<?=$draizp?>/acc/confirmacion">
+<?php include $_SERVER["DOCUMENT_ROOT"].'/milpeques/secciones/auxiliares.php'; ?>
     <div style="margin: auto; width: 100%;">
         <h4><?=$auxfor?></h4>
-        <input type="hidden" id="importeBase" name="importeBase" value="<?=$_SESSION['datos_cesta']['ImporteTotal']?>">
+        <input type="hidden" id="importeBase" name="importeBase" value="<?=$_SESSION['datos_cesta']['totalSinEnvio']?>">
         <input type="hidden" id="importeTotal" name="importeTotal" value="<?=$_SESSION['datos_cesta']['ImporteTotal']?>"/>
-        <input type="hidden" id="nuevopenvio" name="nuevopenvio" value="<?=extraePortes($Empresa, $total, $draizp)?>"/>
+        <input type="hidden" id="nuevopenvio" name="nuevopenvio" value="<?=calculatePortes($_SESSION['datos_cesta']['totalSinEnvio'])?>"/>
         <input type='hidden' id='nuevotransp' name='nuevotransp' value='0'>
         
         <select id="pagarcon" name="pagarcon" onchange="activa()">
@@ -24,53 +25,53 @@
                         $totalpaypal = $totalpaypal + $Empresa['ifpaypal'];
                     }
                     if($Empresa['paypalNombre'] == ''){
-                        echo '<option value="pay">(PAYPAL) '.$auxpay.' ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$totalpaypal), 2, ',', '.').$_SESSION['moneda'].')</option>';
+                        echo '<option value="pay">(PAYPAL) '.$auxpay.' (+'.$Empresa['ippaypal'].'%)</option>';
                     }else{
-                        echo '<option value="pay"> '.$Empresa['paypalNombre'].' ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$totalpaypal), 2, ',', '.').$_SESSION['moneda'].')</option>';
+                        echo '<option value="pay"> '.$Empresa['paypalNombre'].' (+'.$Empresa['ippaypal'].'%)</option>';
                     }
                 }
                 if ($Empresa['tpv'] > 0){
                     if($Empresa['tpvNombre'] == ''){
-                        echo '<option value="tar">(TARJETA) Débito/Crédito ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$_SESSION['compra']['total']), 2, ',', '.').$_SESSION['moneda'].')</option>';
+                        echo '<option value="tar">(TARJETA) Débito/Crédito</option>';
                     }else{
-                        echo '<option value="tar"> '.$Empresa['tpvNombre'].' ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$_SESSION['compra']['total']), 2, ',', '.').$_SESSION['moneda'].')</option>';
+                        echo '<option value="tar"> '.$Empresa['tpvNombre'].'</option>';
                     }
                 }
                 if ($Empresa['tpv2'] > 0){
                     if($actual != $Empresa['url']){
                         if($Empresa['tpvNombre'] == ''){
-                            echo '<option value="tpv">(TARJETA) Débito/Crédito ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$_SESSION['compra']['total']), 2, ',', '.').$_SESSION['moneda'].')</option>';
+                            echo '<option value="tpv">(TARJETA) Débito/Crédito </option>';
                         }else{
-                            echo '<option value="tpv"> '.$Empresa['tpvNombre'].' ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$_SESSION['compra']['total']), 2, ',', '.').$_SESSION['moneda'].')</option>';
+                            echo '<option value="tpv"> '.$Empresa['tpvNombre'].'</option>';
                         }
                     }
                 }
                 if (strlen($Empresa['cuenta']) > 0){
                     if($Empresa['transfeNombre'] == ''){
-                        echo '<option value="ccc">(TRANSFER) '.$auxtra.' ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$_SESSION['compra']['total']), 2, ',', '.').$_SESSION['moneda'].')</option>';
+                        echo '<option value="ccc">(TRANSFER) '.$auxtra.' </option>';
                     }else{
-                        echo '<option value="ccc"> '.$Empresa['transfeNombre'].' ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$_SESSION['compra']['total']), 2, ',', '.').$_SESSION['moneda'].')</option>';
+                        echo '<option value="ccc"> '.$Empresa['transfeNombre'].' </option>';
                     }
                 }
                 if ($Empresa['iban'] > 0){
                     if($Empresa['transfeNombre'] == ''){
-                        echo '<option value="dom">(DOMIC) '.$auxdom.' ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$_SESSION['compra']['total']), 2, ',', '.').$_SESSION['moneda'].')</option>';
+                        echo '<option value="dom">(DOMIC) '.$auxdom.'</option>';
                     }else{
-                        echo '<option value="dom"> '.$Empresa['transfeNombre'].' ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$_SESSION['compra']['total']), 2, ',', '.').$_SESSION['moneda'].')</option>';                                       
+                        echo '<option value="dom"> '.$Empresa['transfeNombre'].'</option>';                                       
                     }
                 }
                 if ($Empresa['contrareembolso'] > 0){
                     if($Empresa['contraNombre'] == ''){
-                        echo '<option value="cre">(CONTRAR) '.$auxcont.' ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$_SESSION['compra']['total']), 2, ',', '.').$_SESSION['moneda'].')</option>';
+                        echo '<option value="cre">(CONTRAR) '.$auxcont.'</option>';
                     }else{
-                        echo '<option value="cre"> '.$Empresa['contraNombre'].' ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$_SESSION['compra']['total']), 2, ',', '.').$_SESSION['moneda'].')</option>';
+                        echo '<option value="cre"> '.$Empresa['contraNombre'].'</option>';
                     }
                 }
                 if ($Empresa['entienda'] > 0){
                     if($Empresa['tiendaNombre'] == ''){
-                        echo '<option value="tie">(TIENDA) '.$auxtie.' ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$_SESSION['compra']['total']), 2, ',', '.').$_SESSION['moneda'].')</option>';
+                        echo '<option value="tie">(TIENDA) '.$auxtie.'</option>';
                     }else{
-                        echo '<option value="tie"> '.$Empresa['tiendaNombre'].' ('.number_format(ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$_SESSION['compra']['total']), 2, ',', '.').$_SESSION['moneda'].')</option>';                                        
+                        echo '<option value="tie"> '.$Empresa['tiendaNombre'].'</option>';                                        
                     }
                 }
                 if($pagosEspeciales['fDirecta'] == 1)
