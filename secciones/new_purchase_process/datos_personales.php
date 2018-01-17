@@ -7,8 +7,7 @@
     var cambiado = false; 
     var oldPorte = 0;
 
-    jQuery(document).ready(function(){
-        var base = jQuery('#importeBase').val().replace(',','.');
+    jQuery(window).load(function(){        
         var porteOriginal = parseFloat(jQuery('#nuevopenvio').val());
         jQuery('#nuevopenvio').val( jQuery('#nuevopenvio').val() - porteOriginal);
 
@@ -19,17 +18,21 @@
             jQuery( "#pago-form" ).submit();
         });
         jQuery('input[type=radio][name=penvio]').change(function() {//Script para cambiar el precio total
+            base = jQuery('#importeBase').val().replace(',','.');
+            if(base == ''){
+                base = jQuery('#base_helper').val().replace(',','.');
+            }
             total = 0;
             base = parseFloat(base);
             porte = this.value.replace('.','');
             porte = parseFloat(porte);
             porte = porte + porteOriginal;
             total = base + porte;
-            var rounded = Math.round((total*100),2) /100;
             if(porte == 0)
                 jQuery('.portes-text').text('Gratis');
-            else
-                jQuery('.portes-text').text(porte + ' €');
+            else{
+                jQuery('.portes-text').text(porte.toFixed(2) + ' €');
+            }
             jQuery('#importeTotal').val(total);
             jQuery('#nuevopenvio').val(this.value);
             jQuery('.importe-total').text(total);

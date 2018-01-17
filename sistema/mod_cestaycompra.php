@@ -2581,6 +2581,7 @@ function Presupuesto($usuario)
 		if ($compraid < 0)
 			$precio = -1;
 		
+        
 		return $precio + $portes;
 	}
 	
@@ -2671,7 +2672,7 @@ function Presupuesto($usuario)
 		global $Empresa, $dbi;
 		require_once('./sistema/mod_contacto.php');
                 require_once('./sistema/mod_varios.php');
-        
+                
                 $secreto = time();
                 $cambio = ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],1);
 		$precio = CrearUnaCompraPendiente($_SESSION['usr']['id'], $penvio, $transp, $secreto, 'pendiente de pago', array ($_SESSION['compra']['entrega']['nombre'], $_SESSION['compra']['entrega']['dni'], $_SESSION['compra']['entrega']['direccion'], $_SESSION['compra']['entrega']['pais'], $_SESSION['compra']['entrega']['provincia'], $_SESSION['compra']['entrega']['localidad'], $_SESSION['compra']['entrega']['cp'], $_SESSION['compra']['entrega']['paisid']), array ($_SESSION['compra']['entrega']['nombreE'], $_SESSION['compra']['entrega']['direccionE'], $_SESSION['compra']['entrega']['paisE'], $_SESSION['compra']['entrega']['provinciaE'], $_SESSION['compra']['entrega']['localidadE'], $_SESSION['compra']['entrega']['cpE'], $_SESSION['compra']['entrega']['telefono']), $cambio, $Empresa['moneda'], $_SESSION['divisa']);
@@ -2682,7 +2683,7 @@ function Presupuesto($usuario)
 		$linkCancel = 'http://'.$_SERVER['HTTP_HOST'].'/'.$_SESSION['lenguaje'].'finalizado#contenido';
         
                 $_SESSION['finalizacion']['precio'] = $precio;
-                
+             
     
 		// Se incluye la librería
 		require_once('./componentes/redsys/apiRedsys.php');
@@ -2832,7 +2833,7 @@ function Presupuesto($usuario)
 	{
 		global $Empresa, $dbi;
 		require_once('./sistema/mod_contacto.php');
-                require_once('./sistema/mod_varios.php');
+        require_once('./sistema/mod_varios.php');
         
 		$secreto = uniqid();
                 $cambio = ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],1);
@@ -2849,26 +2850,26 @@ function Presupuesto($usuario)
 		$urlNotificacion = 'http://'.$_SERVER['HTTP_HOST'].'/index.php?sys_action=pagook3&amp;uid='.$_SESSION['usr']['id'].'&amp;ses='.$_SESSION['usr']['sesion'].'&amp;secreto='.$secreto.'&amp;fpago=paypal';
 		$linkReturn = 'http://'.$_SERVER['HTTP_HOST'].'/index.php?sys_action=return&amp;uid='.$_SESSION['usr']['id'].'&amp;secreto='.$secreto.'&amp;ses='.$_SESSION['usr']['sesion'].'&amp;fpago=paypal';
 		$linkReturn2 = 'http://'.$_SERVER['HTTP_HOST'].'/index.php?sys_action=return2&uid='.$_SESSION['usr']['id'].'&secreto='.$secreto.'&ses='.$_SESSION['usr']['sesion'].'&amp;fpago=paypal';
-                $linkCancel = $linkReturn;
+        $linkCancel = $linkReturn;
 		
 		// EJECUCIÓN PARA PAYPAL
-                $p->add_field('business', $Empresa['paypal']);
-                
-                if($_SESSION['compra']['afiliadopaypal'] != ''){  
-                    $sqlpais = "SELECT paypal, email FROM bd_distribuidores WHERE nombre = '".$_SESSION['compra']['afiliadopaypal']."'";
-                    $query = mysqli_query($dbi, $sqlpais);
-                    if (mysqli_num_rows($query) > 0){
-                        $assoc = mysqli_fetch_assoc($query);
-                        if($assoc['paypal'] != '')
-                            $p->add_field('business', $assoc['paypal']);
-                    }
-                }
-                
-                if($_SESSION['compra']['afiliadopaypal'] != ''){ 
-                    $empresilla = $_SESSION['compra']['afiliadopaypal'];
-                }else{
-                    $empresilla = $Empresa['nombre'];
-                }
+        $p->add_field('business', $Empresa['paypal']);
+        
+        if($_SESSION['compra']['afiliadopaypal'] != ''){  
+            $sqlpais = "SELECT paypal, email FROM bd_distribuidores WHERE nombre = '".$_SESSION['compra']['afiliadopaypal']."'";
+            $query = mysqli_query($dbi, $sqlpais);
+            if (mysqli_num_rows($query) > 0){
+                $assoc = mysqli_fetch_assoc($query);
+                if($assoc['paypal'] != '')
+                    $p->add_field('business', $assoc['paypal']);
+            }
+        }
+        
+        if($_SESSION['compra']['afiliadopaypal'] != ''){ 
+            $empresilla = $_SESSION['compra']['afiliadopaypal'];
+        }else{
+            $empresilla = $Empresa['nombre'];
+        }
                 
 		$p->add_field('return', $linkReturn2);
 		$p->add_field('cancel_return', $linkCancel);
@@ -2878,8 +2879,9 @@ function Presupuesto($usuario)
 		$p->add_field('currency_code',$_SESSION['divisa']);
 		//$p->add_field('currency_code','USD');
 		$p->add_field('amount', ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],$precio));
-		
 		$p->submit_paypal_post();
+        if(!empty($_SESSION['datos_cesta']))
+            die;
 	}
         
         function PagarConPaypalS($penvio, $transp)
@@ -2964,7 +2966,7 @@ function Presupuesto($usuario)
         }else{
             $empresilla = $Empresa['nombre'];
         }
-                
+
 		$secreto = uniqid();
                 $cambio = ConvertirMoneda($Empresa['moneda'],$_SESSION['divisa'],1);
 		$precio = CrearUnaCompraPendiente($_SESSION['usr']['id'], $penvio, $transp, $secreto, 'transferencia', array ($_SESSION['compra']['entrega']['nombre'], $_SESSION['compra']['entrega']['dni'], $_SESSION['compra']['entrega']['direccion'], $_SESSION['compra']['entrega']['pais'], $_SESSION['compra']['entrega']['provincia'], $_SESSION['compra']['entrega']['localidad'], $_SESSION['compra']['entrega']['cp']), array ($_SESSION['compra']['entrega']['nombreE'], $_SESSION['compra']['entrega']['direccionE'], $_SESSION['compra']['entrega']['paisE'], $_SESSION['compra']['entrega']['provinciaE'], $_SESSION['compra']['entrega']['localidadE'], $_SESSION['compra']['entrega']['cpE'], $_SESSION['compra']['entrega']['telefono']), $cambio, $Empresa['moneda'], $_SESSION['divisa']);

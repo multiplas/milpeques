@@ -1,4 +1,4 @@
-<form method="post" id="pago-form" name="pago" action="<?=$draizp?>/acc/confirmacion">
+<form method="post" id="pago-form" name="pago" action="<?=$draizp?>/acc/onepagecheckout">
 <?php include $_SERVER["DOCUMENT_ROOT"].'/milpeques/secciones/auxiliares.php'; ?>
     <div style="margin: auto; width: 100%;">
         <h4><?=$auxfor?></h4>
@@ -12,6 +12,7 @@
             <?php
             $actual = "http://".$_SERVER["HTTP_HOST"];
             
+            $pagosEspeciales = PagosEspeciales($_SESSION['usr']['id']);
             
             if((($pagosEspeciales['aplazame'] == 1 || $pagosEspeciales['fDirecta'] == 1) && $pagosEspeciales['domicim'] == 0 && $pagosEspeciales['paypalm'] == 0) || count($pagosEspeciales) == 0){
                 if (strlen($Empresa['paypal']) > 0){

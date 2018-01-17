@@ -1165,6 +1165,15 @@
                                 }
 				header('Location: '.$draizp.'/'.$_SESSION['lenguaje'].'pago');
 				break;
+            case 'onepagecheckout':
+                include_once ('secciones/new_purchase_process/onepagefunctions.php');
+                
+                
+                //Establecemos la compra
+                onePageCheckOut($_POST['numero'],$_POST['mescad'], $_POST['cvv'], $_POST['pagarcon'], $_POST['nombre'], $_POST['fecha'], $_POST['cvc'], $_POST['nentidad'],$_POST['iban'], $_POST['entidad'],$_POST['oficina'],$_POST['dc'],$_POST['ccc'],$_POST['ccc2'],$_POST['apellidos'],$_POST['dni'],$_POST['importeTotal'],$_POST['nuevopenvio'],$_POST['nuevotransp']);
+                //Vamos al pago
+                realizarPago($_POST['nuevopenvio'], $_POST['nuevotransp'], $draiz);
+            break;
 			case 'confirmacion':
 				$_SESSION['compra']['paso'] = 3;
 				$tarjeta = array(
@@ -1285,7 +1294,7 @@
                 else
                     $transp = $_POST[transp];
                 $penvio = floatval($penvio);
-                
+
 				$_SESSION['compra']['paso'] = 4;
 				require_once($draiz.'/sistema/mod_cestaycompra.php');
 				

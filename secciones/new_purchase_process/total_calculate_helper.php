@@ -206,9 +206,10 @@ function muestraDesglose($total, $draizp){
         <div class="row">
             <div class="col-xs-12"><?php echo $baseImpText .' ('.$iva.')% '.$ivaPrice.' €<span class="pull-right">'. $baseImpPrice .' ' .$_SESSION['moneda'] .'</span>' ?></div>
             <div class="col-xs-9">Subtotal</div>
+            <input type="hidden" id="base_helper" value="<?php echo round($total,2)?>"/>
             <div class="col-xs-3 text-right"><?php echo round($total,2).' ' .$_SESSION['moneda'] ?></div>
             <div class="col-xs-9">Envío</div>
-            <div class="col-xs-3 text-right portes-text"><?php echo calculatePortes($total) ?> €</div>
+            <div class="col-xs-3 text-right portes-text"><?php echo number_format (calculatePortes($total),2 ) ?> €</div>
         </div>
         <hr>
     <?php
